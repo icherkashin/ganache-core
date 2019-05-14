@@ -40,7 +40,7 @@ describe("Time adjustment", function() {
     await send("evm_increaseTime", SECONDSTOJUMP);
 
     // Mine a block so new time is recorded.
-    await send("evm_mine", null);
+    await send("evm_mine", {});
 
     const { timestamp } = await web3.eth.getBlock("latest");
     const secondsJumped = timestamp - timestampBeforeJump;
@@ -58,7 +58,7 @@ describe("Time adjustment", function() {
     // Adjust time
     const expectedMinedTimestamp = 1000000;
 
-    await send("evm_mine", expectedMinedTimestamp);
+    await send("evm_mine", { timestamp: expectedMinedTimestamp });
 
     const { timestamp } = await web3.eth.getBlock("latest");
     assert.strictEqual(timestamp, expectedMinedTimestamp);
@@ -77,7 +77,7 @@ describe("Time adjustment", function() {
     assert.strictEqual(currentTimeAdjustment, originalTimeAdjustment + SECONDSTOJUMP);
 
     // Mine a block so new time is recorded.
-    await send("evm_mine", null);
+    await send("evm_mine", {});
     await send("evm_revert", 1);
 
     const revertedTimeAdjustment = provider.manager.state.blockchain.timeAdjustment;
@@ -92,7 +92,7 @@ describe("Time adjustment", function() {
     await send("evm_setTime", new Date(previousTime - SECONDSTOJUMP));
 
     // Mine a block so new time is recorded.
-    await send("evm_mine", null);
+    await send("evm_mine", {});
 
     const { timestamp } = await web3.eth.getBlock("latest");
     assert(previousTime > timestamp);
